@@ -338,5 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-appsettings.json
-appsettings.Development.json
+
+# Dont add app settings
+./BlazorGraphApi/appsettings.json
+./BlazorGraphApi/appsettings.Development.json
