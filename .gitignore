@@ -340,5 +340,5 @@ ASALocalRun/
 healthchecksdb
 
 # Dont add app settings
-./BlazorGraphApi/appsettings.json
-./BlazorGraphApi/appsettings.Development.json
+BlazorGraphApi/appsettings.json
+BlazorGraphApi/appsettings.Development.json
