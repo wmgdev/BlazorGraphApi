@@ -38,7 +38,7 @@ In this situation the browser cookies exist, but the in-memory cache does not. T
 Deleting the browser cookies and reloaded the page sort of worked, but I was looking for a better solution.
 
 In the samples provided with Microsoft.Indentity.Web 
-they add ``` [AuthorizeForScopes(Scopes = new[] { Constants.ScopeUserRead })] ``` attribute to the controller, which catches the exception, signs the user out and then signs them back in, which populated the token cache. We don;t have a MVC Controller in Blazor, but it also woks for razor pages, so I added this to __Host.cshtml PageModel.
+they add ``` [AuthorizeForScopes(Scopes = new[] { Constants.ScopeUserRead })] ``` attribute to the controller, which catches the exception, signs the user out and then signs them back in, which populated the token cache. This also works for razor pages, so I added this to __Host.cshtml PageModel.
 
 
 __Hosts.cshtml.cs
