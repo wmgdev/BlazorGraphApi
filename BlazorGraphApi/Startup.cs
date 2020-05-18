@@ -37,17 +37,17 @@ namespace BlazorGraphApi
             services.AddGraphService(Configuration);
 
 
-            // back to normal code, but using newtonsoft
+            // back to normal code
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
-            }).AddNewtonsoftJson();
+            });
 
             services.AddRazorPages();
-            services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
+            services.AddServerSideBlazor();
             // our services
             services.AddTransient<GraphApiService>();
             services.AddSingleton<WeatherForecastService>();
