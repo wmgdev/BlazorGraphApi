@@ -55,7 +55,8 @@ protected override async Task OnInitializedAsync()
     {
         if (ex.InnerException is MsalUiRequiredException)
         {
-            NavigationManager.NavigateTo($"/api/signin?redirectUrl={NavigationManager.Uri}", true);
+            var redirectUrl = Uri.EscapeDataString(NavigationManager.Uri);
+            NavigationManager.NavigateTo($"/api/signin?redirectUrl={redirectUrl}", true);
         }
     }
 }
