@@ -1,8 +1,5 @@
 ﻿@page "/profile"
-@inject NavigationManager NavigationManager
 @using BlazorGraphApi.Services
-@using Microsoft.Identity.Client
-
 @using Graph = Microsoft.Graph
 @inject GraphApiService graphApiService
 
@@ -41,19 +38,8 @@
     private Graph.User me;
 
     protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            me = await graphApiService.GetProfileAsync();
-        }
-        catch (Exception ex)
-        {
-            if (ex.InnerException is MsalUiRequiredException)
-            {
-                var redirectUrl = Uri.EscapeDataString(NavigationManager.Uri);
-                NavigationManager.NavigateTo($"/api/signin?redirectUrl={redirectUrl}", true);
-            }
-        }
+    {    
+        me = await graphApiService.GetProfileAsync();
     }
 
 }
