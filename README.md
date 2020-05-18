@@ -6,7 +6,7 @@ It works, but still working through some issues
 
 This code uses [Microsoft.Indentity.Web](https://github.com/AzureAD/microsoft-identity-web)
 
-You will need to register your app in Azure and modify appsettings.json and appsettings.Development.json to include your details
+You will need to register your app in Azure and modify appsettings.json to include your details
 
 ```
 {
@@ -38,49 +38,37 @@ In this situation the browser cookies exist, but the in-memory cache does not. T
 Deleting the browser cookies and reloaded the page sort of worked, but I was looking for a better solution.
 
 In the samples provided with Microsoft.Indentity.Web 
-they added [AuthorizeForScopes(Scopes = new[] { Constants.ScopeUserRead })] attribute to the controller, which caught the exception,
-signed the user out and then signed them back in, which populated the token cache. Couldn't do this in Blazor, so came up with a fudge.
+they add ``` [AuthorizeForScopes(Scopes = new[] { Constants.ScopeUserRead })] ``` attribute to the controller, which catches the exception, signs the user out and then signs them back in, which populated the token cache. We don;t have a MVC Controller in Blazor, but it also woks for razor pages, so I added this to __Host.cshtml PageModel.
 
 
-In the Blazor page I caught the MsalUiRequiredException and redirected to a normal webapi controller, passing the current page url
+__Hosts.cshtml.cs
 
 ```
-protected override async Task OnInitializedAsync()
+using BlazorGraphApi.Services;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Identity.Web;
+using System.Threading.Tasks;
+
+namespace BlazorGraphApi.Pages
 {
-    try
+    [AuthorizeForScopes(Scopes = new[] { Constants.ScopeUserRead })]
+    public class _Host : PageModel
     {
-        me = await graphApiService.GetProfileAsync();
-    }
-    catch (Exception ex)
-    {
-        if (ex.InnerException is MsalUiRequiredException)
+        readonly ITokenAcquisition tokenAcquisition;
+        public _Host(ITokenAcquisition tokenAcquisition)
         {
-            var redirectUrl = Uri.EscapeDataString(NavigationManager.Uri);
-            NavigationManager.NavigateTo($"/api/signin?redirectUrl={redirectUrl}", true);
+            this.tokenAcquisition = tokenAcquisition;
+        }
+
+        public async Task OnGetAsync()
+        {
+            // Get a token, 
+            // If token cache is not populated the authorizeForScopes attribute will re-authorize which will populate the cache
+            string token = await tokenAcquisition.GetAccessTokenForUserAsync(new[] { Constants.ScopeUserRead });
         }
     }
 }
 
 ```
 
-
-
-The normal webapi controller in Controller/SignInController.cs forces a sign-in, populates the cache and then
-redirects back to the page that called it.
-
-```
-[HttpGet]
-[AuthorizeForScopes(Scopes = new[] { Constants.ScopeUserRead })]
-public async Task<ActionResult<string>> SignInAsync(string redirectUrl)
-{
-    // force a sign in, get a token, populates the token cache
-    string result = await tokenAcquisition.GetAccessTokenForUserAsync(new[] { Constants.ScopeUserRead });
-    // go back to where we came from
-    Response.Redirect(redirectUrl);
-
-    return result;
-}
-
-```
-
-Clunky, but seems to work, I'd be interested to hear if anyone has a better solution.
+Seems to work, I'd be interested to hear if anyone has a better solution.
