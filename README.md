@@ -1,8 +1,6 @@
 # BlazorGraphApi
 
-Blazor Server App with AD Authentication, that calls the MS Graph API on-behalf of the signed-in user.
-
-It works, but still working through some issues
+Blazor Server App with Azure AD Authentication, that calls the Microsoft Graph API on-behalf of the signed-in user.
 
 This code uses [Microsoft.Indentity.Web](https://github.com/AzureAD/microsoft-identity-web)
 
@@ -32,7 +30,7 @@ You will need to register your app in Azure and modify appsettings.json to inclu
 
 # Issues
 
-I had some problems the first time the user loads the blazor MS Graph profile page.
+I had some problems the first time the user loads the Blazor MS Graph profile page.
 
 In this situation the browser cookies exist, but the in-memory cache does not. This causes a MsalUiRequiredException to be thrown. 
 Deleting the browser cookies and reloaded the page sort of worked, but I was looking for a better solution.
