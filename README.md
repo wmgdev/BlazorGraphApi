@@ -28,7 +28,7 @@ You will need to register your app in Azure and modify appsettings.json to inclu
 }
 ```
 
-# Issues
+# Notes
 
 I had some problems the first time the user loads the Blazor MS Graph profile page.
 
