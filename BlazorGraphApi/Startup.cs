@@ -26,7 +26,7 @@ namespace BlazorGraphApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // replaceed this line
+            // replace this line
             //services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
             //.AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
