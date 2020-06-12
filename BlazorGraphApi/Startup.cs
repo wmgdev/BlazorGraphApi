@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
-
+using Microsoft.Identity.Web.UI;
 
 namespace BlazorGraphApi
 {
@@ -37,15 +37,16 @@ namespace BlazorGraphApi
             services.AddGraphService(Configuration);
 
 
-            // back to normal code
+            // Added AddMicrosoftIdentityUI()
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
-            });
+            }).AddMicrosoftIdentityUI();
 
+            // back to normal code
             services.AddRazorPages();
             services.AddServerSideBlazor();
             // our services
