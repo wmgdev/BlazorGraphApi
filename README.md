@@ -45,4 +45,4 @@ Microsoft.Identity.Web contains many other features which can be used in Blazor 
 Hopefully these features will be rolled into the new project templates for Blazor in .NET 5
 
 
-For more infor refer to [Microsoft.Indentity.Web](https://github.com/AzureAD/microsoft-identity-web)
+For more info refer to [Microsoft.Indentity.Web](https://github.com/AzureAD/microsoft-identity-web)
