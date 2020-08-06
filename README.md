@@ -40,7 +40,7 @@ Code has now been updated to include the new features, especially written for Bl
 
 
 This is a minimal example of calling MS Graph Api from Blazor Server.
-Microsoft.Identity.Web contains many other features which can be used in Blazor Server, including calling downstream WebApi's and using incremental consent.
+Microsoft.Identity.Web contains many other features which can be used in Blazor Server, including calling downstream WebApi and using incremental consent.
 
 Hopefully these features will be rolled into the new project templates for Blazor in .NET 5
 
