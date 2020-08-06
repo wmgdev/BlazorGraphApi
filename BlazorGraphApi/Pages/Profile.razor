@@ -1,17 +1,34 @@
 ﻿@page "/profile"
-@using BlazorGraphApi.Services
-@using Graph = Microsoft.Graph
-@inject GraphApiService graphApiService
+@using Microsoft.Identity.Web
+@using Microsoft.Graph
+@inject Microsoft.Graph.GraphServiceClient _graphServiceClient
+@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
 
 <h1>MS Graph Profile</h1>
-@if (me != null)
+@if (user != null)
 {
     <table class="table table-striped table-condensed" style="font-family: monospace">
+        <tr>
+            <td>Photo</td>
+            <td>
+                @{
+                    if (photo != null)
+                    {
+                        <img style="margin: 5px 0; width: 150px" src="data:image/jpeg;base64, @photo" />
+                    }
+                    else
+                    {
+                        <h3>NO PHOTO</h3>
+                        <p>Check user profile in Azure Active Directory to add a photo.</p>
+                    }
+                }
+            </td>
+        </tr>
         @{
-            var properties = me.GetType().GetProperties();
+            var properties = user.GetType().GetProperties();
             foreach (var child in properties)
             {
-                object value = child.GetValue(me);
+                object value = child.GetValue(user);
                 string stringRepresentation;
                 if (!(value is string) && value is IEnumerable<string>)
                 {
@@ -35,11 +52,41 @@
 
 @code {
 
-    private Graph.User me;
+    User user;
+    string photo;
 
     protected override async Task OnInitializedAsync()
-    {    
-        me = await graphApiService.GetProfileAsync();
+    {
+        try
+        {
+            user = await _graphServiceClient.Me.Request().GetAsync();
+            photo = await GetPhoto();
+        }
+        catch (Exception ex)
+        {
+            ConsentHandler.HandleException(ex);
+        }
+    }
+
+    protected async Task<string> GetPhoto()
+    {
+        string photo;
+
+        try
+        {
+            using (var photoStream = await _graphServiceClient.Me.Photo.Content.Request().GetAsync())
+            {
+                byte[] photoByte = ((System.IO.MemoryStream)photoStream).ToArray();
+                photo = Convert.ToBase64String(photoByte);
+                this.StateHasChanged();
+            }
+
+        }
+        catch (Exception)
+        {
+            photo = null;
+        }
+        return photo;
     }
 
 }

@@ -31,10 +31,15 @@ namespace BlazorGraphApi
             //.AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
             // with this
-            services.AddSignIn(Configuration);
-            services.AddWebAppCallsProtectedWebApi(Configuration, new string[] { Constants.ScopeUserRead })
-            .AddInMemoryTokenCaches();
-            services.AddGraphService(Configuration);
+            string[] scopes = Configuration.GetValue<string>("CalledApi:CalledApiScopes")?.Split(' ');
+            services.AddMicrosoftWebAppAuthentication(Configuration, "AzureAd")
+                    .AddMicrosoftWebAppCallsWebApi(Configuration,
+                                                   scopes,
+                                                   "AzureAd")
+                    .AddInMemoryTokenCaches();
+            services.AddDownstreamWebApiService(Configuration);
+            services.AddMicrosoftGraph(scopes,
+                                       Configuration.GetValue<string>("CalledApi:CalledApiUrl"));
 
 
             // Added AddMicrosoftIdentityUI()
@@ -46,11 +51,10 @@ namespace BlazorGraphApi
                 options.Filters.Add(new AuthorizeFilter(policy));
             }).AddMicrosoftIdentityUI();
 
-            // back to normal code
             services.AddRazorPages();
-            services.AddServerSideBlazor();
-            // our services
-            services.AddTransient<GraphApiService>();
+            // Add consent handler
+            services.AddServerSideBlazor().AddMicrosoftIdentityConsentHandler();
+            
             services.AddSingleton<WeatherForecastService>();
         }
 
