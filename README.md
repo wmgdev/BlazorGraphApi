@@ -13,8 +13,14 @@ You will need to register your app in Azure and modify appsettings.json to inclu
     "Domain": "your.domain",
     "TenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "ClientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-    "CallbackPath": "/signin-oidc",
-    "ClientSecret": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    "ClientSecret": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "ClientCertificates": [
+    ],
+    "CallbackPath": "/signin-oidc"
+  },
+  "CalledApi": {
+    "CalledApiScopes": "user.read",
+    "CalledApiUrl": "https://graph.microsoft.com/beta"
   },
   "Logging": {
     "LogLevel": {
@@ -23,51 +29,20 @@ You will need to register your app in Azure and modify appsettings.json to inclu
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
-  "AllowedHosts": "*",
-  "GraphApiUrl": "https://graph.microsoft.com/beta"
+  "AllowedHosts": "*"
 }
 ```
 
 # Notes
 
-I had some problems the first time the user loads the Blazor MS Graph profile page.
-
-In this situation the auth browser cookies exist, but the in-memory cache does not. This causes a MsalUiRequiredException to be thrown. Deleting the browser cookies and reloaded the page sort of worked, but I was looking for a better solution.
-
-In the samples provided with Microsoft.Indentity.Web 
-they add<br/>
-``` [AuthorizeForScopes(Scopes = new[] { Constants.ScopeUserRead })] ```<br/>
-attribute to the controller, which catches the exception, signs the user out and then signs them back in, which populates the token cache. This also works for razor pages, so I added this to _Host.cshtml PageModel.
+Code has now been updated to include the new features, especially written for Blazor Server in
+[Microsoft.Indentity.Web](https://github.com/AzureAD/microsoft-identity-web)
 
 
-_Host.cshtml.cs
+This is a minimal example of calling MS Graph Api from Blazor Server.
+Microsoft.Identity.Web contains many other features which can be used in Blazor Server, including calling downstream WebApi's and using incremental consent.
 
-```
-using BlazorGraphApi.Services;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Identity.Web;
-using System.Threading.Tasks;
+Hopefully these features will be rolled into the new project templates for Blazor in .NET 5
 
-namespace BlazorGraphApi.Pages
-{
-    [AuthorizeForScopes(Scopes = new[] { Constants.ScopeUserRead })]
-    public class _Host : PageModel
-    {
-        readonly ITokenAcquisition tokenAcquisition;
-        public _Host(ITokenAcquisition tokenAcquisition)
-        {
-            this.tokenAcquisition = tokenAcquisition;
-        }
 
-        public async Task OnGetAsync()
-        {
-            // Get a token, 
-            // If token cache is not populated the authorizeForScopes attribute will re-authorize which will populate the cache
-            string token = await tokenAcquisition.GetAccessTokenForUserAsync(new[] { Constants.ScopeUserRead });
-        }
-    }
-}
-
-```
-
-Seems to work, I'd be interested to hear if anyone has a better solution.
+For more infor refer to [Microsoft.Indentity.Web](https://github.com/AzureAD/microsoft-identity-web)
