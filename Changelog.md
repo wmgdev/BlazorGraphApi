@@ -1,3 +1,8 @@
+v0.3.1
+============
+### New features:
+**Contains major breaking changes to follow the new Blazor Server patterns in Microsoft.Identity.Web v0.3.1-preview
+
 v0.2.0
 ============
 ### New features:
