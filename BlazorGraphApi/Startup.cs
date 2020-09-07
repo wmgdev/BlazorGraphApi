@@ -1,5 +1,6 @@
 using BlazorGraphApi.Data;
 using BlazorGraphApi.Services;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,34 +27,27 @@ namespace BlazorGraphApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // replace this line
-            //services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-            //.AddAzureAD(options => Configuration.Bind("AzureAd", options));
-
-            // with this
-            string[] scopes = Configuration.GetValue<string>("CalledApi:CalledApiScopes")?.Split(' ');
-            services.AddMicrosoftWebAppAuthentication(Configuration, "AzureAd")
-                    .AddMicrosoftWebAppCallsWebApi(Configuration,
-                                                   scopes,
-                                                   "AzureAd")
-                    .AddInMemoryTokenCaches();
-            services.AddDownstreamWebApiService(Configuration);
-            services.AddMicrosoftGraph(scopes,
-                                       Configuration.GetValue<string>("CalledApi:CalledApiUrl"));
+            var initialScopes = Configuration.GetValue<string>("DownstreamApi:Scopes")?.Split(' ');
+            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+               .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"))
+                   .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
+                       .AddMicrosoftGraph(Configuration.GetSection("DownstreamApi"))
+                       .AddInMemoryTokenCaches();
 
 
-            // Added AddMicrosoftIdentityUI()
-            services.AddControllersWithViews(options =>
+            services.AddControllersWithViews()
+                .AddMicrosoftIdentityUI();
+
+            services.AddAuthorization(options =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
-            }).AddMicrosoftIdentityUI();
+                // By default, all incoming requests will be authorized according to the default policy
+                options.FallbackPolicy = options.DefaultPolicy;
+            });
 
             services.AddRazorPages();
             // Add consent handler
-            services.AddServerSideBlazor().AddMicrosoftIdentityConsentHandler();
+            services.AddServerSideBlazor()
+                .AddMicrosoftIdentityConsentHandler();
             
             services.AddSingleton<WeatherForecastService>();
         }
