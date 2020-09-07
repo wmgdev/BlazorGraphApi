@@ -18,9 +18,9 @@ You will need to register your app in Azure and modify appsettings.json to inclu
     ],
     "CallbackPath": "/signin-oidc"
   },
-  "CalledApi": {
-    "CalledApiScopes": "user.read",
-    "CalledApiUrl": "https://graph.microsoft.com/beta"
+  "DownstreamApi": {
+    "BaseUrl": "https://graph.microsoft.com/beta",
+    "Scopes": "user.read"
   },
   "Logging": {
     "LogLevel": {
