@@ -44,6 +44,6 @@ Microsoft.Identity.Web contains many other features which can be used in Blazor 
 
 Hopefully these features will be rolled into the new project templates for Blazor in .NET 5
 
-This example has evolved over time. Now that Microsoft.Identity.Web has improved and embraced Blazor Server, it's now pretty much a copy of the "blazorserver --auth SingleOrg --calls-graph" example app in their Repro
+This example has evolved over time. Now that Microsoft.Identity.Web has improved and embraced Blazor Server, it's now pretty much a copy of the "blazorserver --auth SingleOrg --calls-graph" example app in their Repo
 
 For more info refer to [Microsoft.Indentity.Web](https://github.com/AzureAD/microsoft-identity-web)
