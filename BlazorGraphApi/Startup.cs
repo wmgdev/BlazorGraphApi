@@ -1,5 +1,4 @@
 using BlazorGraphApi.Data;
-using BlazorGraphApi.Services;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
