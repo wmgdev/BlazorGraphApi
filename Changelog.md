@@ -1,3 +1,7 @@
+v1.0.0
+============
+**Update packages to Microsoft.Identity.Web v1.0.0
+
 v0.3.1
 ============
 ### New features:
